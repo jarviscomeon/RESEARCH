@@ -1,0 +1,341 @@
+[PRACT 1A]
+Go to File Menu  Options  Add-Ins Select Analysis ToolPak Press OK
+
+https://docs.google.com/spreadsheets/d/1xTD5Am41d7ScshIWgJP71RaFz9sSm6xD/edit?usp=sharing&ouid=101212284086301157107&rtpof=true&sd=true
+_______________________________________________________________________________________________________________________________________________________________
+_______________________________________________________________________________________________________________________________________________________________
+
+[PRACT 1B] Import data from different data sources (from Excel, csv, mysql, sql server, oracle to R/Python/Excel)
+_______________________________________________________________________________________________________________________________________________________________
+_______________________________________________________________________________________________________________________________________________________________
+
+1B EXCEL.XLSX to paython
+_______________________________________________________________________________________________________________________________________________________________
+
+import os 
+import pandas as pd 
+sFileDir='/content/' 
+#if not os.path.exists(sFileDir): 
+#os.makedirs(sFileDir) 
+################################################################ 
+CurrencyRawData = pd.read_excel('/content/Country_Currency.xlsx')
+#LINK OF THE DATASET = https://docs.google.com/spreadsheets/d/1_D4ym0yIjz6LmHyhZuPusVaKGGXuoG1s/edit?usp=sharing&ouid=104367740859254763718&rtpof=true&sd=true
+sColumns = ['Country or territory', 'Currency', 'ISO-4217'] 
+CurrencyData = CurrencyRawData[sColumns] 
+CurrencyData.rename(columns={'Country or territory': 'Country', 'ISO-4217': 
+'CurrencyCode'}, inplace=True) 
+CurrencyData.dropna(subset=['Currency'],inplace=True) 
+CurrencyData['Country'] = CurrencyData['Country'].map(lambda x: x.strip()) 
+CurrencyData['Currency'] = CurrencyData['Currency'].map(lambda x: 
+x.strip()) 
+CurrencyData['CurrencyCode'] = CurrencyData['CurrencyCode'].map(lambda x: 
+x.strip()) 
+print(CurrencyData) 
+print('~~~~~~ Data from Excel Sheet Retrived Successfully ~~~~~~~ ') 
+sFileName=sFileDir + '/Retrieve-Country-Currency.csv' 
+CurrencyData.to_csv(sFileName, index = False)
+
+_______________________________________________________________________________________________________________________________________________________________
+
+1B SQLite to paython
+_______________________________________________________________________________________________________________________________________________________________
+
+import pandas as pd
+data = pd.read_csv('/content/Retrieve_IP_DATA.csv')
+#CREATE "Retrieve_IP_DATA.csv" WITH RANDOM DATA IN EXCEL WITH .CSV EXTENSION 
+print(data)
+_______________________________________________________________________________________________________________________________________________________________
+            
+        OR
+_______________________________________________________________________________________________________________________________________________________________
+
+import sqlite3 as sq
+import pandas as pd
+sDatabaseName='/content/vermeulen.db'
+conn = sq.connect(sDatabaseName)
+################################################################
+sFileName='/content/Retrieve_IP_DATA.csv'
+#CREATE "Retrieve_IP_DATA.csv" IN EXCEL AND SAVE WITH .CSV EXTENSION 
+print('Loading :',sFileName)
+IP_DATA_ALL_FIX=pd.read_csv(sFileName,header=0,low_memory=False)
+sTable='IP_DATA_ALL'
+print('Storing :',sDatabaseName,' Table:',sTable)
+IP_DATA_ALL_FIX.to_sql(sTable, conn, if_exists="replace")
+print('Loading :',sDatabaseName,' Table:',sTable)
+TestData=pd.read_sql_query("select * from IP_DATA_ALL;", conn)
+print('################')
+print('## Data Values')
+print('################')
+print(TestData)
+print('################')
+print('## Data Profile')
+print('################')
+print('Rows :',TestData.shape[0])
+print('Columns :',TestData.shape[1])
+print('################')
+print('### Done!! ############################################')
+_______________________________________________________________________________________________________________________________________________________________
+
+[PRACT 2B] Perform analysis of given secondary data.
+           Analyze the given Population Census Data for Planning and Decision Making by using the size and composition of populations.
+_______________________________________________________________________________________________________________________________________________________________
+
+https://docs.google.com/spreadsheets/d/1ptHUCEZUCf2HININT0fgFTtJtsGpZd9z/edit?usp=sharing&ouid=101212284086301157107&rtpof=true&sd=true
+
+DATASET=https://docs.google.com/spreadsheets/d/1YSBdBeTTag5i_xod6CDOI9xCdd603wbp/edit?usp=sharing&ouid=104367740859254763718&rtpof=true&sd=true
+
+Put the cursor in cell B22 and click on the AutoSum and then click Enter. This will
+calculate the total population. Then copy the formula in cell D22 across the row 22.
+
+To calculate the percent of males in cell E4, enter the formula =-1*100*B4/$D$22 .
+And copy the formula in cell E4 down to cell E21.
+
+To calculate the percent of females in cell F4, enter the formula =100*C4/$D$22.
+Copy the formula in cell F4 down to cell F21.
+
+To build the population pyramid, we need to choose a horizontal bar chart with two
+series of data (% male and % female) and the age labels in column A as the Category
+X-axis labels. Highlight the range A3:A21, hold down the CTRL key and highlight the
+range E3:F21
+
+Put the tip of your mouse arrow on the Y-axis (vertical axis) so it says “Category
+Axis”, right click and chose Format Axis
+
+Choose Axis options tab and set the major and minor tick mark type to None, Axis
+labels to Low, and click OK.
+
+Click on any of the bars in your pyramid, click right and select “format data series”.
+Set the Overlap to 100 and Gap Width to 0. Click OK.
+_______________________________________________________________________________________________________________________________________________________________
+
+[PRACT 3A] - Perform testing of hypothesis using one sample t-test.
+             One sample t-test : The One Sample t Test determines whether the sample mean is statistically different from a known or hypothesised population mean.
+             The One Sample t Test is a parametric test
+_______________________________________________________________________________________________________________________________________________________________
+
+DATASET= 
+
+from scipy.stats import ttest_1samp
+import numpy as np
+ages = np.genfromtxt('/content/ages.csv')
+print(ages)
+ages_mean = np.mean(ages)
+print(ages_mean)
+tset, pval = ttest_1samp(ages, 30)
+print('p-values - ',pval)
+if pval< 0.05: # alpha value is 0.05
+  print(" we are rejecting null hypothesis")
+else:
+  print("we are accepting null hypothesis")
+
+_______________________________________________________________________________________________________________________________________________________________
+
+[PRACT 3B] - Write a program for t-test comparing two means for independent samples.
+             A college Princiapal informed classroom teachers that some of their students showedunusual potential for intellectual gains.One months later the 
+             students identified to teachers ashaving potentional for unusual intellectual gains showed significiantly greater gains performanceon a test said 
+             to measure IQ than did students who were not so identified. 
+_______________________________________________________________________________________________________________________________________________________________
+
+https://docs.google.com/spreadsheets/d/1FXyjqgPJ0q11Gih7RfstBiymdGgPPuOK/edit?usp=sharing&ouid=101212284086301157107&rtpof=true&sd=true
+
+Experimental Data
+To calculate Standard Mean go to cell A22 and type =SUM(A2:A21)/20
+To calculate Standard Deviation go to cell A23 and type =STDEV(A2:A21)
+Comparison Data
+To calculate Standard Mean go to cell B22 and type =SUM(B2:B21)/20
+To calculate Standard Deviation go to cell B23 and type =STDEV(B2:B21)
+To find T-Test Statistics go to data Data Analysis
+To caluculate the T-Test square value go to cell E20 and type
+=(A22-B22)/SQRT((A23*A23)/COUNT(A2:A21)+(B23*B23)/COUNT(A2:A21))
+Now go to cell E20 and type
+=IF(E20<E12,"H0 is Accepted", "H0 is Rejected and H1 is Accepted")
+Our calculated value is larger than the tabled value at alpha = .01, so we reject the null
+hypothesisand accept the alternative hypothesis, namely, that the difference in gain
+scores is likely the resultof the experimental treatment and not the result of chance
+variation.
+_______________________________________________________________________________________________________________________________________________________________
+
+[PRACT 3C] - Perform testing of hypothesis using paired t-test.
+             An example of this is if you where to collect the blood pressure for an individual before and after some treatment, condition, or time point.The 
+             data set contains blood pressure readings before and after an intervention. 
+_______________________________________________________________________________________________________________________________________________________________
+
+from scipy import stats
+import matplotlib.pyplot as plt
+import pandas as pd
+df = pd.read_csv("blood_pressure.csv")
+print(df[['bp_before','bp_after']].describe())
+#First let’s check for any significant outliers in
+#each of the variables.
+df[['bp_before', 'bp_after']].plot(kind='box')
+# This saves the plot as a png file
+plt.savefig('boxplot_outliers.png')
+# make a histogram to differences between the two scores.
+df['bp_difference'] = df['bp_before'] - df['bp_after']
+df['bp_difference'].plot(kind='hist', title= 'Blood Pressure Difference Histogram')
+#Again, this saves the plot as a png file
+plt.savefig('blood pressure difference histogram.png')
+stats.probplot(df['bp_difference'], plot= plt)
+plt.title('Blood pressure Difference Q-Q Plot')
+plt.savefig('blood pressure difference qq plot.png')
+stats.shapiro(df['bp_difference'])
+stats.ttest_rel(df['bp_before'], df['bp_after'])
+_______________________________________________________________________________________________________________________________________________________________
+
+[PRACT 4A]  Perform testing of hypothesis using chi-squared goodness- of-fit test.
+            Ansystem administrator needs to upgrade the computers for his division. He wants to know what sort of computer system his workers prefer. He gives 
+            three choices: Windows, Mac, or Linux. Test the hypothesis or theory that an equal percentage of the population prefers each type of computer system
+_______________________________________________________________________________________________________________________________________________________________
+
+https://docs.google.com/spreadsheets/d/1ZiWuLAaAxk2DVOlilXD5gFEq0XMA8jrC/edit?usp=sharing&ouid=101212284086301157107&rtpof=true&sd=true
+
+H0 : The population distribution of the variable is the same as the proposed distribution
+HA : The distributions are different
+To calculate the Chi –Squred value for Windows go to cell D2 and type =((B2-
+C2)*(B2-C2))/C2
+To calculate the Chi –Squred value for Mac go to cell D3 and type =((B3-C3)*(B3-
+C3))/C3
+To calculate the Chi –Squred value for Mac go to cell D3 and type =((B4-C4)*(B4-
+C4))/C4
+
+Go to Cell D5 for CHI SQUARED and type=SUM(D2:D4)
+
+To get the table value for Chi-Square for α = 0.05 and dof = 2, go to cell D7 and type
+=CHIINV(0.05,2)
+At cell D8 type =IF(D5>D7, "H0 Accepted","H0 Rejected")
+_______________________________________________________________________________________________________________________________________________________________
+
+[PRACT 4B] Perform testing of hypothesis using chi-squared test of independence.
+           In a study to understatnd the permormacne of M. Sc. IT Part -1 class, a college selects a random sample of 100 students. Each student was asked his 
+           grade obtained in B. Sc. IT. The sample is as given below
+_______________________________________________________________________________________________________________________________________________________________
+
+https://docs.google.com/spreadsheets/d/1W3T4jbMdz2k6gi1ju5Apsf1bFCcQ25pM/edit?usp=sharing&ouid=101212284086301157107&rtpof=true&sd=true
+
+Null Hypothesis - H0 : The performance of girls students is same as boys students.
+Alternate Hypothesis - H1 : The performance of boys and girls students are different.
+Open Excel Workbook
+O A B C D Total
+
+Girls 11 7 5 5 11 39 6.075
+Boys 30 4 3 10 14 61 6.075
+Total 41 11 8 15 25 100 12.150
+Ei 20.5 5.5 4 7.5 12.5 50
+
+Go to Cell N9 and type =N8/2
+Go to Cell O9 and type =O8/2
+Go to Cell P9 and type =P8/2
+Go to Cell Q9 and type =Q8/2
+Go to Cell R9 and type =R8/2
+Go to Cell S6 and calculate total girl students = SUM(N6:R6)
+Go to Cell S7 and calculate total girl students = SUM(N7:R7)
+Now Calculate
+Go to cell T6 and type
+=SUM((N6-$N$9)^2/$N$9,(O6-$O$9)^2/$O$9,(P6-$P$9)^2/$P$9,(Q6-Q$9)^2/$Q$9,
+(R6-$R$9)^2/$R$9)
+Go to cell T7 and type
+=SUM((N7-$N$9)^2/$N$9,(O7-$O$9)^2/$O$9,(P7-$P$9)^2/$P$9,(Q7-Q$9)^2/$Q$9,
+(R7-$R$9)^2/$R$9)
+To get the table value go to cell T11 and type =CHIINV(0.05,4)
+Go to cell O13 and type =IF(T8>=T11," H0 is Accepted", "H0 is Rejected")
+_______________________________________________________________________________________________________________________________________________________________
+
+[PRACT 5A] Perform testing of hypothesis using Z-test. 
+_______________________________________________________________________________________________________________________________________________________________
+
+from statsmodels.stats import weightstats as stests
+import pandas as pd
+from scipy import stats
+df = pd.read_csv("blood_pressure.csv")
+df[['bp_before','bp_after']].describe()
+print(df)
+ztest ,pval = stests.ztest(df['bp_before'], x2=None, value=156)
+print(float(pval))
+if pval<0.05:
+ print("reject null hypothesis")
+else:
+ print("accept null hypothesis")
+_______________________________________________________________________________________________________________________________________________________________
+
+[PRACT 5B] Two-sample Z test- In two sample z-test , similar to t-test here we are checking two
+           independent data groups and deciding whether sample mean of two group is equal or not.
+_______________________________________________________________________________________________________________________________________________________________
+
+import pandas as pd
+from statsmodels.stats import weightstats as stests
+df = pd.read_csv("blood_pressure.csv")
+df[['bp_before','bp_after']].describe()
+print(df)
+ztest ,pval = stests.ztest(df['bp_before'], x2=df['bp_after'], value=0,alternative='two-sided')
+print(float(pval))
+if pval<0.05:
+ print("reject null hypothesis")
+else:
+ print("accept null hypothesis")
+_______________________________________________________________________________________________________________________________________________________________
+
+[PRACT 6] ANNOVA MANOVA
+_______________________________________________________________________________________________________________________________________________________________
+
+
+
+
+_______________________________________________________________________________________________________________________________________________________________
+
+[PRACT 7]  Perform the Random sampling for the given data and analyze it.
+           Example 1: From a population of 10 women and 10 men as given in the table in Figure 1 on the left below, create a random sample of 6 people for 
+           Group 1 and a periodic sample consisting of every 3rd woman for Group 2. 
+_______________________________________________________________________________________________________________________________________________________________
+
+Set Cell O1 = Male and Cell O2 = Female
+To generate a random sample for male students from given population go to Cell O1
+and type
+=INDEX(E$2:E$62,RANK(B2,B$2:B$62))
+Drag teh formula to the desired no of cell to select random sample.
+Now, to generate a random sample for female students go to cell P1 and type
+=INDEX(K$2:K$40,RANK(H2,H$2:H$40))
+Drag teh formula to the desired no of cell to select random sample.
+_______________________________________________________________________________________________________________________________________________________________
+
+[PRACT 8] Positive Correlation
+_______________________________________________________________________________________________________________________________________________________________
+
+import numpy as np 
+import matplotlib.pyplot as plt 
+np.random.seed(1) 
+# 1000 random integers between 0 and 50 
+x = np.random.randint(0, 50, 1000) 
+# Positive Correlation with some noise 
+y = x + np.random.normal(0, 10, 1000) 
+np.corrcoef(x, y) 
+# matplotlib.style.use('ggplot') 
+plt.scatter(x, y) 
+plt.show()
+_______________________________________________________________________________________________________________________________________________________________
+
+Negative Correlation
+_______________________________________________________________________________________________________________________________________________________________
+
+import numpy as np 
+import matplotlib.pyplot as plt 
+np.random.seed(1) 
+#1000 random integers between 0 and 50 
+x = np.random.randint(0, 50, 1000) 
+# Negative Correlation with some noise 
+y = 100 - x + np.random.normal(0, 5, 1000) 
+np.corrcoef(x, y) 
+plt.scatter(x, y) 
+plt.show() 
+_______________________________________________________________________________________________________________________________________________________________
+
+No/Weak Correlation
+_______________________________________________________________________________________________________________________________________________________________
+
+import numpy as np 
+import matplotlib.pyplot as plt 
+np.random.seed(1) 
+x = np.random.randint(0, 50, 1000) 
+y = np.random.randint(0, 50, 1000) 
+np.corrcoef(x, y) 
+plt.scatter(x, y, c = "red") 
+plt.show() 
